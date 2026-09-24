@@ -1,54 +1,48 @@
 name: Build Android Release APK
 
-# 触发方式：
-#   1) push 到 master/main 分支自动构建
-#   2) 手动在 Actions 页点 "Run workflow"
+# 触发条件：push 到 master/main 或打 tag，或手动在 Actions 页点 Run workflow
 on:
   push:
     branches: [master, main]
+    tags: ['v*']
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: 检出代码
+      - name: Checkout 代码
         uses: actions/checkout@v4
 
-      # JDK 17：AGP 9.0.1 + Gradle 9.1 的下限版本
-      - name: 安装 JDK 17
+      - name: 安装 JDK 17（Gradle 9.x 最低要求）
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      # Flutter 版本锁死 3.47.4（与本机一致，避免 gradle 插件版本漂移）
-      - name: 安装 Flutter
+      - name: 安装 Flutter 3.47.4
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.47.4'
           channel: stable
           cache: true
 
-      # 安装 Android SDK（compileSdk 36 对应 platform android-36）
       - name: 安装 Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: 安装 SDK 组件并接受 license
+      - name: 接受许可并安装 SDK 组件
         run: |
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
           sdkmanager "platforms;android-36" "build-tools;36.0.0"
 
-      # GitHub runner 在海外，把 Gradle 发行版源从腾讯镜像切回官方（更快更稳）
-      - name: 切回官方 Gradle 发行版源
+      # GitHub runner 在海外，把国内腾讯镜像还原成官方源，避免下载慢/失败
+      - name: 还原官方源（替换腾讯镜像）
         run: |
           sed -i 's|mirrors.cloud.tencent.com/gradle/gradle-9.1.0-all.zip|services.gradle.org/distributions/gradle-9.1.0-all.zip|' \
             android/gradle/wrapper/gradle-wrapper.properties
-
-      # 同理把 AGP/Kotlin 依赖仓库里的腾讯 maven 镜像移除（用官方 google/mavenCentral）
-      - name: 移除腾讯 maven 镜像
-        run: |
-          sed -i '/mirrors.cloud.tencent.com\/nexus/d' android/settings.gradle.kts android/build.gradle.kts
+          sed -i '/mirrors.cloud.tencent.com\/nexus/d' \
+            android/settings.gradle.kts android/build.gradle.kts
 
       - name: 拉取依赖
         run: flutter pub get
@@ -56,8 +50,7 @@ jobs:
       - name: 构建 Release APK
         run: flutter build apk --release
 
-      # 上传产物，Actions 页可下载
-      - name: 上传 APK
+      - name: 上传 APK 产物
         uses: actions/upload-artifact@v4
         with:
           name: kugou-car-release-apk
