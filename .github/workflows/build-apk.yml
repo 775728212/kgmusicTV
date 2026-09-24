@@ -29,12 +29,17 @@ jobs:
           cache: true
 
       # ubuntu-latest 已预装整套 Android SDK（ANDROID_HOME=/usr/local/lib/android/sdk），
-      # 不用 android-actions/setup-android（其 sdkmanager 会报 "Failed to find package"），
-      # 只需接受许可 + 补装编译所需的组件。
+      # 但 sdkmanager 不一定在 PATH（镜像里是 cmdline-tools/16.0.0，没有 latest 软链），
+      # 所以这里显式探测真实路径，不裸调命令。
       - name: 接受许可并补装 SDK 组件
         run: |
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager --install "platforms;android-36" "build-tools;36.0.0"
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER=$(ls "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager | sort -V | tail -1)
+          fi
+          echo "Using sdkmanager: $SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+          "$SDKMANAGER" --install "platforms;android-36" "build-tools;36.0.0"
 
       # GitHub runner 在海外，把国内腾讯镜像还原成官方源，避免下载慢/失败
       - name: 还原官方源（替换腾讯镜像）
