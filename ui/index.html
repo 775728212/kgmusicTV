@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>酷狗概念版 · 车机版 — EchoMusic 风格</title>
+<style>
+/* ============ 主题变量：白天 EchoMusic 粉白 / 夜晚 深色 ============ */
+:root{
+  --bg-grad: linear-gradient(135deg,#fde7ef 0%,#f7e8ff 45%,#e6ecff 100%);
+  --bg-base:#fdf1f5;
+  --card:#ffffff;
+  --card-2:#fff7fa;
+  --text:#2b2430;
+  --text-2:#8a8394;
+  --line:#f3e3ea;
+  --pink:#ff5c8a;
+  --pink-2:#ff8fb0;
+  --purple:#8f6fff;
+  --blue:#5aa4ff;
+  --accent:#ff5c8a;
+  --accent-soft:#ffe9f0;
+  --shadow:0 8px 30px rgba(255,92,138,.10);
+  --side-bg:rgba(255,255,255,.72);
+  --top-blur:rgba(255,255,255,.66);
+  --chip:#fff0f4;
+  --row-hover:#fff2f6;
+  --now-line:#ffe1ea;
+}
+body[data-theme="night"]{
+  --bg-grad: linear-gradient(135deg,#171320 0%,#1d1826 45%,#141824 100%);
+  --bg-base:#171320;
+  --card:#241f2e;
+  --card-2:#2b2438;
+  --text:#f0eaf4;
+  --text-2:#9a92a8;
+  --line:#332c40;
+  --pink:#ff6d97;
+  --pink-2:#ff8fb0;
+  --accent:#ff6d97;
+  --accent-soft:#3a2a35;
+  --shadow:0 8px 30px rgba(0,0,0,.35);
+  --side-bg:rgba(30,25,40,.82);
+  --top-blur:rgba(23,19,32,.72);
+  --chip:#2f2839;
+  --row-hover:#2e2739;
+  --now-line:#3d2c38;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:"PingFang SC","Microsoft YaHei","HarmonyOS Sans",sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg-base)}
+body{color:var(--text)}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;background:var(--bg-grad);overflow:hidden;border-radius:18px;display:flex}
+
+/* ============ 左侧栏 ============ */
+#side{width:300px;flex:none;background:var(--side-bg);backdrop-filter:blur(24px);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:24px 18px 16px;gap:6px;z-index:5}
+.user-card{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);cursor:pointer}
+.avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--purple));display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;flex:none}
+.user-card .nm{font-size:22px;font-weight:700}
+.user-card .sub{font-size:15px;color:var(--text-2);margin-top:4px}
+.side-sec{margin-top:14px}
+.side-sec .ttl{font-size:14px;color:var(--text-2);padding:6px 12px;letter-spacing:2px}
+.nav-item{display:flex;align-items:center;gap:14px;padding:13px 14px;border-radius:14px;font-size:19px;cursor:pointer;color:var(--text);transition:background .2s;user-select:none}
+.nav-item svg{width:24px;height:24px;stroke:var(--text-2);flex:none}
+.nav-item:hover{background:var(--row-hover)}
+.nav-item.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.nav-item.on svg{stroke:var(--accent)}
+.side-playlists{overflow:auto;flex:1;min-height:40px;margin-top:4px;padding-right:2px}
+.side-playlists::-webkit-scrollbar{width:4px}
+.side-playlists::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+.pl-item{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:12px;font-size:16px;color:var(--text-2);cursor:pointer}
+.pl-item:hover{background:var(--row-hover);color:var(--text)}
+.pl-cover{width:40px;height:40px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+.side-foot{display:flex;align-items:center;justify-content:space-between;padding:12px 8px 4px;border-top:1px solid var(--line)}
+#themeBtn{display:flex;align-items:center;gap:10px;font-size:16px;color:var(--text-2);cursor:pointer;padding:8px 12px;border-radius:12px}
+#themeBtn:hover{background:var(--row-hover)}
+#themeBtn svg{width:22px;height:22px}
+
+/* ============ 主区 ============ */
+#main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
+#topbar{height:88px;flex:none;display:flex;align-items:center;gap:20px;padding:0 34px;backdrop-filter:blur(18px);background:var(--top-blur);z-index:4}
+.search-box{flex:1;max-width:640px;display:flex;align-items:center;gap:12px;background:var(--card);border-radius:24px;padding:0 22px;height:52px;box-shadow:var(--shadow)}
+.search-box svg{width:22px;height:22px;stroke:var(--text-2);flex:none}
+.search-box input{flex:1;border:none;outline:none;background:transparent;font-size:19px;color:var(--text)}
+.search-box input::placeholder{color:var(--text-2)}
+.top-right{margin-left:auto;display:flex;align-items:center;gap:16px}
+.icon-btn{width:52px;height:52px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow)}
+.icon-btn svg{width:24px;height:24px;stroke:var(--text)}
+.icon-btn:hover{background:var(--row-hover)}
+#loginBtn,.loginBtnCls{height:52px;padding:0 28px;border-radius:26px;background:linear-gradient(135deg,var(--pink),var(--pink-2));color:#fff;font-size:19px;font-weight:700;border:none;cursor:pointer;box-shadow:0 6px 18px rgba(255,92,138,.35)}
+
+#pages{flex:1;overflow-y:auto;overflow-x:hidden;padding:30px 34px 64px}
+#pages::-webkit-scrollbar{width:6px}
+#pages::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+.page{display:none;animation:fadeIn .35s ease}
+.page.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin:34px 0 20px}
+.sec-head h2{font-size:27px;font-weight:800;display:flex;align-items:center;gap:12px}
+.sec-head h2::before{content:"";width:6px;height:26px;border-radius:4px;background:linear-gradient(var(--pink),var(--purple))}
+.sec-head .more{font-size:17px;color:var(--text-2);cursor:pointer}
+
+/* ============ 首页：问候 + 特色大卡 + 歌单网格 ============ */
+.greet{font-size:34px;font-weight:800;margin-bottom:8px}
+.greet-sub{font-size:18px;color:var(--text-2);margin-bottom:28px}
+.hero-cards{display:flex;gap:24px}
+.hero-card{flex:1;height:220px;border-radius:26px;padding:30px 34px;position:relative;overflow:hidden;cursor:pointer;color:#fff;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--shadow);transition:transform .25s}
+.hero-card:hover{transform:translateY(-6px)}
+.hero-card.daily{background:linear-gradient(120deg,#ff7ba0,#ff5c8a 55%,#ff8fb0)}
+.hero-card.rank{background:linear-gradient(120deg,#8f6fff,#6f8bff 55%,#5aa4ff)}
+.hero-card .hc-title{font-size:30px;font-weight:800;display:flex;align-items:center;gap:14px}
+.hero-card .hc-sub{font-size:17px;opacity:.9}
+.date-badge{width:66px;height:66px;border-radius:18px;background:rgba(255,255,255,.25);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05}
+.date-badge b{font-size:28px}
+.date-badge span{font-size:13px}
+.top-badge{padding:8px 18px;border-radius:20px;background:rgba(255,255,255,.25);backdrop-filter:blur(6px);font-size:18px;font-weight:800;letter-spacing:2px}
+.hero-deco{position:absolute;right:-30px;bottom:-40px;width:190px;height:190px;border-radius:50%;border:26px solid rgba(255,255,255,.14)}
+
+.card-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:22px}
+.song-card{background:var(--card);border-radius:20px;padding:16px;cursor:pointer;box-shadow:var(--shadow);transition:transform .22s}
+.song-card:hover{transform:translateY(-6px)}
+.cover{border-radius:16px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff}
+.cover .note{width:44%;opacity:.55}
+.cover .ring{position:absolute;inset:auto -18% -22% auto;width:70%;aspect-ratio:1;border-radius:50%;border:3px solid rgba(255,255,255,.35)}
+.cover .first{position:absolute;font-size:64px;font-weight:900;opacity:.35}
+.song-card .t{font-size:18px;font-weight:700;margin-top:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song-card .a{font-size:15px;color:var(--text-2);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ============ 搜索页 ============ */
+.hot-wrap{display:flex;flex-wrap:wrap;gap:14px;margin-top:22px}
+.hot-chip{padding:12px 22px;border-radius:24px;background:var(--chip);font-size:17px;cursor:pointer;color:var(--text)}
+.hot-chip b{color:var(--pink);margin-right:8px;font-style:italic}
+.result-row{display:flex;align-items:center;gap:18px;padding:14px 18px;border-radius:16px;cursor:pointer}
+.result-row:hover{background:var(--row-hover)}
+.result-row.playing{background:var(--now-line)}
+.result-row .idx{width:36px;color:var(--text-2);font-size:16px;font-style:italic}
+.result-row .rc{width:64px;height:64px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:900}
+.result-row .ri{flex:1;min-width:0}
+.result-row .ri .t{font-size:20px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.result-row .ri .a{font-size:15px;color:var(--text-2);margin-top:5px}
+.result-row .du{color:var(--text-2);font-size:15px}
+.sq{font-size:11px;color:var(--pink);border:1px solid var(--pink);border-radius:4px;padding:0 4px;margin-left:8px;font-weight:800}
+
+/* ============ 排行榜 / 歌单：左侧分类 + 右内容 ============ */
+.two-col{display:flex;gap:26px}
+.cat-panel{width:300px;flex:none;background:var(--card);border-radius:22px;padding:18px;box-shadow:var(--shadow);height:fit-content}
+.cat-panel h3{font-size:20px;font-weight:800;padding:8px 12px 14px}
+.cat-item{padding:14px 16px;border-radius:14px;font-size:18px;cursor:pointer;display:flex;justify-content:space-between;color:var(--text-2)}
+.cat-item:hover{background:var(--row-hover)}
+.cat-item.on{background:var(--accent-soft);color:var(--accent);font-weight:800}
+.rank-detail{flex:1;background:var(--card);border-radius:22px;padding:24px;box-shadow:var(--shadow)}
+.rank-head{display:flex;gap:24px;align-items:center;margin-bottom:18px}
+.rank-head .big-cover{width:130px;height:130px;border-radius:20px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:44px;font-weight:900}
+.rank-head h2{font-size:28px;font-weight:800}
+.rank-head p{color:var(--text-2);font-size:15px;margin-top:8px}
+
+/* ============ FM ============ */
+.fm-hero{border-radius:28px;padding:36px 40px;color:#fff;position:relative;overflow:hidden;background:linear-gradient(120deg,#2b2140,#41306b 55%,#5c3d8f);box-shadow:var(--shadow);display:flex;gap:34px;align-items:center}
+.fm-hero .cover{width:230px;height:230px;border-radius:50%;flex:none;animation:spin 18s linear infinite;box-shadow:0 0 0 12px rgba(255,255,255,.12),0 20px 50px rgba(0,0,0,.35)}
+.fm-hero .cover::after{content:"";position:absolute;inset:38%;border-radius:50%;background:rgba(0,0,0,.4)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fm-info h2{font-size:32px;font-weight:800}
+.fm-info p{font-size:17px;opacity:.85;margin-top:12px;max-width:760px;line-height:1.6}
+.fm-ctrl{display:flex;align-items:center;gap:22px;margin-top:26px}
+.fm-btn{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fm-btn.main{width:76px;height:76px;background:#fff}
+.fm-btn svg{width:28px;height:28px;stroke:#fff}
+.fm-btn.main svg{stroke:var(--pink)}
+.spectrum{display:flex;align-items:flex-end;gap:6px;height:56px;margin-top:8px}
+.spectrum i{width:7px;border-radius:4px;background:linear-gradient(var(--pink),#ffd0e0);animation:eq 1s ease-in-out infinite}
+@keyframes eq{0%,100%{height:18%}50%{height:95%}}
+.radio-row{display:flex;gap:22px;margin-top:30px}
+.radio-card{flex:1;background:var(--card);border-radius:20px;padding:20px;text-align:center;cursor:pointer;box-shadow:var(--shadow)}
+.radio-card .rc{width:110px;height:110px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:38px;font-weight:900}
+.radio-card .t{font-size:18px;font-weight:700;margin-top:14px}
+.radio-card .s{font-size:14px;color:var(--text-2);margin-top:6px}
+
+/* ============ 歌手 / 专辑 Hero ============ */
+.hero-page{border-radius:26px;overflow:hidden;position:relative;color:#fff;padding:44px 44px 36px;box-shadow:var(--shadow)}
+.hero-bg{position:absolute;inset:0;filter:blur(50px) saturate(1.3);transform:scale(1.2)}
+.hero-page .inner{position:relative;display:flex;gap:34px;align-items:flex-end}
+.hero-page .cover{width:190px;height:190px;border-radius:24px;flex:none;box-shadow:0 16px 40px rgba(0,0,0,.3)}
+.hero-page h2{font-size:38px;font-weight:800}
+.hero-page .meta{font-size:16px;opacity:.9;margin-top:12px}
+.hero-actions{display:flex;gap:16px;margin-top:20px}
+.pill{padding:12px 28px;border-radius:26px;font-size:17px;font-weight:700;cursor:pointer;background:rgba(255,255,255,.2);backdrop-filter:blur(6px)}
+.pill.solid{background:#fff;color:var(--pink)}
+.tabs{display:flex;gap:26px;margin:26px 0 6px;border-bottom:1px solid var(--line)}
+.tab{font-size:20px;padding:12px 4px;cursor:pointer;color:var(--text-2);border-bottom:3px solid transparent}
+.tab.on{color:var(--accent);font-weight:800;border-color:var(--accent)}
+.track-row{display:flex;align-items:center;gap:18px;padding:15px 18px;border-radius:14px;cursor:pointer}
+.track-row:hover{background:var(--row-hover)}
+.track-row.playing{background:var(--now-line)}
+.track-row .idx{width:40px;font-style:italic;color:var(--text-2)}
+.track-row .tt{flex:1;font-size:19px;font-weight:600}
+.track-row .aa{width:280px;color:var(--text-2);font-size:15px}
+.track-row .dd{color:var(--text-2);font-size:15px}
+
+/* ============ 我的 ============ */
+.mine-head{display:flex;align-items:center;gap:26px;background:var(--card);border-radius:24px;padding:28px 32px;box-shadow:var(--shadow)}
+.mine-head .avatar{width:96px;height:96px;font-size:44px}
+.mine-head h2{font-size:28px;font-weight:800}
+.mine-head p{color:var(--text-2);font-size:16px;margin-top:8px}
+.stat-row{display:flex;gap:22px;margin-top:26px}
+.stat-card{flex:1;background:var(--card);border-radius:20px;padding:24px;box-shadow:var(--shadow);text-align:center;cursor:pointer}
+.stat-card b{font-size:34px;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat-card span{display:block;font-size:16px;color:var(--text-2);margin-top:8px}
+
+/* ============ 底部播放条 ============ */
+#player{height:96px;flex:none;margin:0 16px 16px;border-radius:24px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);display:flex;align-items:center;padding:0 26px;gap:26px;z-index:6;position:relative}
+#player .pc{width:74px;height:74px;border-radius:16px;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;font-weight:900;overflow:hidden;position:relative}
+#player .pi{width:230px;min-width:0}
+#player .pi .t{font-size:19px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#player .pi .a{font-size:14px;color:var(--text-2);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p-center{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
+.p-btns{display:flex;align-items:center;gap:34px}
+.p-btn{width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.p-btn svg{width:24px;height:24px;stroke:var(--text)}
+.p-btn.play{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--pink-2));box-shadow:0 6px 18px rgba(255,92,138,.4)}
+.p-btn.play svg{width:28px;height:28px;stroke:#fff;margin-left:3px}
+.p-progress{display:flex;align-items:center;gap:14px;width:620px}
+.p-progress span{font-size:13px;color:var(--text-2);width:44px;text-align:center}
+.bar{flex:1;height:6px;border-radius:4px;background:var(--line);position:relative;cursor:pointer}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;width:34%;border-radius:4px;background:linear-gradient(90deg,var(--pink),var(--pink-2))}
+.bar .dot{position:absolute;top:50%;left:34%;width:14px;height:14px;border-radius:50%;background:var(--pink);transform:translate(-50%,-50%);box-shadow:0 2px 8px rgba(255,92,138,.5)}
+.p-right{display:flex;align-items:center;gap:20px;width:330px;justify-content:flex-end}
+.p-right .p-btn svg{stroke:var(--text-2)}
+.vol{display:flex;align-items:center;gap:10px;width:130px}
+.vol .bar{width:80px}
+
+/* ============ 全屏歌词 ============ */
+#fullplayer{position:absolute;inset:0;z-index:20;display:none;color:#fff}
+#fullplayer.on{display:block;animation:fadeIn .35s ease}
+#fp-bg{position:absolute;inset:-60px;filter:blur(90px) saturate(1.4);transform:scale(1.15)}
+#fp-bg::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.28)}
+.fp-inner{position:relative;height:100%;display:flex;align-items:center;padding:0 110px;gap:90px}
+.fp-cover{width:430px;height:430px;border-radius:36px;flex:none;box-shadow:0 30px 90px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:130px;font-weight:900;position:relative;overflow:hidden}
+.fp-cover.spin{animation:spin 22s linear infinite;border-radius:50%}
+.fp-cover::after{content:"";position:absolute;inset:42%;border-radius:50%;background:rgba(0,0,0,.35)}
+.fp-right{flex:1;min-width:0}
+.fp-title{font-size:38px;font-weight:800}
+.fp-artist{font-size:20px;opacity:.85;margin-top:12px}
+.lyric-box{height:470px;overflow:hidden;margin-top:34px;position:relative;mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent)}
+.lrc{text-align:left;transition:transform .5s cubic-bezier(.3,.8,.3,1);padding:170px 0}
+.lrc-line{font-size:26px;line-height:1.5;padding:13px 0;opacity:.45;transition:all .35s}
+.lrc-line.cur{opacity:1;font-size:31px;font-weight:800;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.35)}
+.lrc-line.tr{font-size:17px;opacity:.35;margin-top:-6px}
+.fp-top{position:absolute;top:34px;right:44px;display:flex;gap:16px}
+.fp-ctrl{position:absolute;bottom:44px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:16px}
+.fp-ctrl .bar{width:1200px;background:rgba(255,255,255,.25)}
+.fp-ctrl .bar .fill{background:#fff}
+.fp-ctrl .p-btns .p-btn svg{stroke:#fff}
+.fp-ctrl .p-btn.play{background:#fff}
+.fp-ctrl .p-btn.play svg{stroke:var(--pink)}
+.fp-close{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fp-close svg{width:24px;height:24px;stroke:#fff}
+
+/* ============ 登录弹窗 ============ */
+#mask{position:absolute;inset:0;background:rgba(20,10,20,.45);backdrop-filter:blur(6px);z-index:40;display:none;align-items:center;justify-content:center}
+#mask.on{display:flex}
+.login-card{width:520px;background:var(--card);border-radius:28px;padding:44px;position:relative;animation:pop .3s ease}
+@keyframes pop{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+.login-card h3{font-size:28px;font-weight:800;text-align:center}
+.login-card .hint{font-size:16px;color:var(--text-2);text-align:center;margin:12px 0 30px}
+.login-card input{width:100%;height:60px;border-radius:16px;border:2px solid var(--line);background:var(--card-2);padding:0 22px;font-size:19px;color:var(--text);outline:none;margin-bottom:18px}
+.login-card input:focus{border-color:var(--pink)}
+.code-row{display:flex;gap:14px}
+.code-row button{flex:none;width:150px;border:none;border-radius:16px;background:var(--accent-soft);color:var(--accent);font-size:17px;font-weight:700;cursor:pointer}
+.login-submit{width:100%;height:62px;border:none;border-radius:18px;background:linear-gradient(135deg,var(--pink),var(--pink-2));color:#fff;font-size:21px;font-weight:800;cursor:pointer;margin-top:8px;box-shadow:0 8px 22px rgba(255,92,138,.35)}
+.login-close{position:absolute;right:22px;top:22px;width:40px;height:40px;border-radius:50%;background:var(--chip);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.login-close svg{width:20px;height:20px;stroke:var(--text-2)}
+
+/* toast */
+#toast{position:absolute;left:50%;top:110px;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fff;font-size:17px;padding:14px 30px;border-radius:24px;z-index:60;opacity:0;transition:opacity .3s;pointer-events:none}
+#toast.on{opacity:1}
+</style>
+</head>
+<body data-theme="light">
+<div id="stage">
+
+  <!-- ================= 左侧栏 ================= -->
+  <div id="side">
+    <div class="user-card" onclick="go('mine')">
+      <div class="avatar">🐶</div>
+      <div><div class="nm">未登录</div><div class="sub">点击登录酷狗账号</div></div>
+    </div>
+    <div class="side-sec">
+      <div class="ttl">发现音乐</div>
+      <div class="nav-item on" data-page="home" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-6h6v6"/></svg>首页推荐</div>
+      <div class="nav-item" data-page="search" onclick="go('search')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>搜索</div>
+      <div class="nav-item" data-page="rank" onclick="go('rank')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-8"/></svg>排行榜</div>
+      <div class="nav-item" data-page="plist" onclick="go('plist')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>歌单广场</div>
+      <div class="nav-item" data-page="fm" onclick="go('fm')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v2M21 12h-2"/></svg>私人FM</div>
+    </div>
+    <div class="side-sec">
+      <div class="ttl">我的乐库</div>
+      <div class="nav-item" data-page="mine" onclick="go('mine')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 21s-8-5.3-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 5.7-8 11-8 11z"/></svg>我最喜爱</div>
+      <div class="nav-item" data-page="mine" onclick="go('mine')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>最近播放</div>
+    </div>
+    <div class="side-sec" style="flex:1;display:flex;flex-direction:column;min-height:0">
+      <div class="ttl">我的歌单</div>
+      <div class="side-playlists" id="sidePls"></div>
+    </div>
+    <div class="side-foot">
+      <div id="themeBtn" onclick="toggleTheme()">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="currentColor"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M19.4 4.6l-1.8 1.8M6.4 17.6l-1.8 1.8"/></svg>
+        <span id="themeText">夜晚模式</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 主区 ================= -->
+  <div id="main">
+    <div id="topbar">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke-width="2"/></svg>
+        <input id="searchInput" placeholder="搜索歌曲、歌手、专辑…" onkeydown="if(event.key==='Enter')doSearch()">
+      </div>
+      <div class="top-right">
+        <div class="icon-btn" title="刷新"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v4h-4"/></svg></div>
+        <div class="icon-btn" title="设置"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.07-.4.1-.8.1-1.2z"/></svg></div>
+        <button id="loginBtn" onclick="openLogin()">登录</button>
+      </div>
+    </div>
+
+    <div id="pages">
+      <!-- ============ 首页 ============ -->
+      <div class="page on" id="page-home">
+        <div class="greet" id="greet">下午好 🌞</div>
+        <div class="greet-sub">欢迎回来，今天想听点什么？</div>
+        <div class="hero-cards">
+          <div class="hero-card daily" onclick="toast('接口：/everyday/recommend（每日推荐）')">
+            <div class="hc-title">每日推荐 <div class="date-badge" id="dateBadge"><b>24</b><span>9月</span></div></div>
+            <div class="hc-sub">根据你的口味生成 · 每天 6:00 更新</div>
+            <div class="hero-deco"></div>
+          </div>
+          <div class="hero-card rank" onclick="go('rank')">
+            <div class="hc-title">排行榜 <div class="top-badge">TOP</div></div>
+            <div class="hc-sub">热歌榜 · 飙升榜 · 酷狗TOP500…</div>
+            <div class="hero-deco"></div>
+          </div>
+        </div>
+        <div class="sec-head"><h2>推荐歌单</h2><div class="more" onclick="go('plist')">更多 ›</div></div>
+        <div class="card-grid" id="homePlGrid"></div>
+        <div class="sec-head"><h2>为你推荐 · 新歌速递</h2><div class="more">更多 ›</div></div>
+        <div class="card-grid" id="homeNewGrid"></div>
+      </div>
+
+      <!-- ============ 搜索 ============ -->
+      <div class="page" id="page-search">
+        <div class="sec-head"><h2>热门搜索</h2></div>
+        <div class="hot-wrap" id="hotWrap"></div>
+        <div class="sec-head"><h2 id="searchTitle">搜索结果</h2></div>
+        <div id="searchResults" style="background:var(--card);border-radius:22px;padding:16px;box-shadow:var(--shadow)"></div>
+      </div>
+
+      <!-- ============ 排行榜 ============ -->
+      <div class="page" id="page-rank">
+        <div class="two-col">
+          <div class="cat-panel"><h3>官方榜</h3><div id="rankCats"></div></div>
+          <div class="rank-detail">
+            <div class="rank-head">
+              <div class="big-cover" id="rankCover">TOP</div>
+              <div><h2 id="rankName">酷狗TOP500</h2><p id="rankDesc">每天更新 · 云音乐官方榜单</p></div>
+            </div>
+            <div id="rankList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 歌单广场 ============ -->
+      <div class="page" id="page-plist">
+        <div class="two-col">
+          <div class="cat-panel"><h3>分类</h3><div id="plCats"></div></div>
+          <div style="flex:1;min-width:0">
+            <div class="card-grid" id="plGrid" style="grid-template-columns:repeat(4,1fr)"></div>
+            <div id="plDetail" style="display:none">
+              <div class="rank-detail">
+                <div class="rank-head">
+                  <div class="big-cover" id="plCover">歌</div>
+                  <div><h2 id="plName">歌单</h2><p id="plDesc"></p></div>
+                </div>
+                <div id="plTracks"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 私人FM ============ -->
+      <div class="page" id="page-fm">
+        <div class="fm-hero">
+          <div class="cover" id="fmCover" style="background:linear-gradient(135deg,#a06cff,#ff6d97)">♪</div>
+          <div class="fm-info">
+            <h2 id="fmTitle">私人FM · 专属电台</h2>
+            <p id="fmSong">基于你的听歌口味，私人订制专属电台，遇到喜欢的歌曲点击红心即可收藏。</p>
+            <div class="fm-ctrl">
+              <div class="fm-btn" onclick="toast('上一首')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 5v14L8 12zM6 5v14"/></svg></div>
+              <div class="fm-btn main" onclick="toast('播放/暂停')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 4v16M17 4v16"/></svg></div>
+              <div class="fm-btn" onclick="toast('下一首 /song/url 切换')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 5v14l10-7zM18 5v14"/></svg></div>
+              <div class="fm-btn" onclick="toast('已收藏 ❤')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 21s-8-5.3-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 5.7-8 11-8 11z"/></svg></div>
+            </div>
+            <div class="spectrum" id="spectrum"></div>
+          </div>
+        </div>
+        <div class="sec-head"><h2>更多电台</h2></div>
+        <div class="radio-row" id="radioRow"></div>
+        <div class="sec-head"><h2>场景电台</h2></div>
+        <div class="card-grid" id="sceneGrid"></div>
+      </div>
+
+      <!-- ============ 我的 ============ -->
+      <div class="page" id="page-mine">
+        <div class="mine-head">
+          <div class="avatar">🐶</div>
+          <div style="flex:1">
+            <h2 id="mineName">未登录用户</h2>
+            <p>登录后同步收藏歌单、最近播放与云盘音乐（/user/detail）</p>
+          </div>
+          <button id="loginBtn2" class="loginBtnCls" onclick="openLogin()">立即登录</button>
+        </div>
+        <div class="stat-row">
+          <div class="stat-card"><b id="stFav">0</b><span>喜欢的音乐</span></div>
+          <div class="stat-card"><b id="stPl">0</b><span>收藏歌单</span></div>
+          <div class="stat-card"><b id="stRe">0</b><span>最近播放</span></div>
+          <div class="stat-card"><b id="stAl">0</b><span>收藏专辑</span></div>
+        </div>
+        <div class="sec-head"><h2>我最喜爱</h2><div class="more">管理 ›</div></div>
+        <div id="favList" style="background:var(--card);border-radius:22px;padding:16px;box-shadow:var(--shadow)"></div>
+      </div>
+
+      <!-- ============ 歌手 ============ -->
+      <div class="page" id="page-artist">
+        <div class="hero-page">
+          <div class="hero-bg" style="background:linear-gradient(135deg,#ff7ba0,#8f6fff)"></div>
+          <div class="inner">
+            <div class="cover" id="arCover">周</div>
+            <div>
+              <h2 id="arName">周杰伦</h2>
+              <div class="meta" id="arMeta">单曲 312 · 专辑 45 · MV 88 · 粉丝 2100万</div>
+              <div class="hero-actions"><div class="pill solid">▶ 播放热门</div><div class="pill">+ 关注</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="tabs">
+          <div class="tab on" onclick="switchTab(this,'arSongs')">热门歌曲</div>
+          <div class="tab" onclick="switchTab(this,'arAlbums')">专辑</div>
+        </div>
+        <div id="arSongs"></div>
+        <div id="arAlbums" style="display:none"><div class="card-grid" id="arAlbumGrid" style="grid-template-columns:repeat(5,1fr)"></div></div>
+      </div>
+
+      <!-- ============ 专辑 ============ -->
+      <div class="page" id="page-album">
+        <div class="hero-page">
+          <div class="hero-bg" style="background:linear-gradient(135deg,#5aa4ff,#8f6fff)"></div>
+          <div class="inner">
+            <div class="cover" id="alCover">专</div>
+            <div>
+              <h2 id="alName">专辑名称</h2>
+              <div class="meta" id="alMeta">歌手 · 发行时间 · 共 N 首</div>
+              <div class="hero-actions"><div class="pill solid">▶ 播放全部</div><div class="pill">+ 收藏</div></div>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--card);border-radius:22px;padding:16px;box-shadow:var(--shadow);margin-top:24px" id="alTracks"></div>
+      </div>
+    </div>
+
+    <!-- ============ 底部播放条 ============ -->
+    <div id="player">
+      <div class="pc" id="miniCover" onclick="openFull()" style="background:linear-gradient(135deg,#ff7ba0,#8f6fff)">♪</div>
+      <div class="pi"><div class="t" id="miniTitle">晴天</div><div class="a" id="miniArtist">周杰伦 · 叶惠美</div></div>
+      <div class="p-center">
+        <div class="p-btns">
+          <div class="p-btn" onclick="toast('播放模式：列表循环')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17 2l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/></svg></div>
+          <div class="p-btn" onclick="toast('上一首')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 5v14L8 12zM6 5v14"/></svg></div>
+          <div class="p-btn play" onclick="toast('播放/暂停')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 4l14 8-14 8z" fill="currentColor" stroke="none"/></svg></div>
+          <div class="p-btn" onclick="toast('下一首')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 5v14l10-7zM18 5v14"/></svg></div>
+          <div class="p-btn" onclick="openFull()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 9h10M7 13h7"/></svg></div>
+        </div>
+        <div class="p-progress">
+          <span>01:36</span>
+          <div class="bar" onclick="seek(event)"><div class="fill"></div><div class="dot"></div></div>
+          <span>04:29</span>
+        </div>
+      </div>
+      <div class="p-right">
+        <span class="sq">SQ</span>
+        <div class="p-btn" onclick="toast('音效 /effects')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 12h4l2-7 4 14 2-7h4"/></svg></div>
+        <div class="p-btn" onclick="toast('播放队列')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div>
+        <div class="vol"><div class="p-btn" style="width:30px;height:30px"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" style="width:20px"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6"/></svg></div><div class="bar"><div class="fill" style="width:70%"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 全屏歌词 ============ -->
+  <div id="fullplayer">
+    <div id="fp-bg" style="background:linear-gradient(135deg,#ff7ba0,#8f6fff)"></div>
+    <div class="fp-inner">
+      <div class="fp-cover spin" id="fpCover" style="background:linear-gradient(135deg,#ff7ba0,#8f6fff)">晴</div>
+      <div class="fp-right">
+        <div class="fp-title" id="fpTitle">晴天</div>
+        <div class="fp-artist" id="fpArtist">周杰伦 · 专辑《叶惠美》 · 2003</div>
+        <div class="lyric-box"><div class="lrc" id="lrcBox"></div></div>
+      </div>
+    </div>
+    <div class="fp-top"><div class="fp-close" onclick="closeFull()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></div></div>
+    <div class="fp-ctrl">
+      <div class="p-progress" style="width:1200px">
+        <span style="color:rgba(255,255,255,.7)">01:36</span>
+        <div class="bar" onclick="seek(event)"><div class="fill"></div><div class="dot" style="background:#fff"></div></div>
+        <span style="color:rgba(255,255,255,.7)">04:29</span>
+      </div>
+      <div class="p-btns">
+        <div class="p-btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17 2l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/></svg></div>
+        <div class="p-btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 5v14L8 12zM6 5v14"/></svg></div>
+        <div class="p-btn play"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 4l14 8-14 8z" fill="currentColor" stroke="none"/></svg></div>
+        <div class="p-btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 5v14l10-7zM18 5v14"/></svg></div>
+        <div class="p-btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 21s-8-5.3-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 5.7-8 11-8 11z"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 登录弹窗 ============ -->
+  <div id="mask" onclick="if(event.target===this)closeLogin()">
+    <div class="login-card">
+      <div class="login-close" onclick="closeLogin()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
+      <h3>登录酷狗音乐</h3>
+      <div class="hint">手机号 + 验证码登录（/login/phone）</div>
+      <input placeholder="请输入手机号">
+      <div class="code-row"><input placeholder="请输入验证码" style="margin-bottom:0"><button onclick="toast('验证码已发送（模拟）')">获取验证码</button></div>
+      <button class="login-submit" onclick="doLogin()">登 录</button>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+</div>
+
+<script>
+/* ============ 缩放适配 15.6" 1080p 车机 ============ */
+const stage=document.getElementById('stage');
+function fit(){
+  const s=Math.min(innerWidth/1920,innerHeight/1080);
+  stage.style.transform='translate(-50%,-50%) scale('+s+')';
+}
+addEventListener('resize',fit);fit();
+
+/* ============ 主题切换 ============ */
+let theme='light';
+function toggleTheme(){
+  theme=theme==='light'?'night':'light';
+  document.body.dataset.theme=theme;
+  document.getElementById('themeText').textContent=theme==='light'?'夜晚模式':'白天模式';
+  document.getElementById('themeIcon').innerHTML=theme==='light'
+    ?'<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M19.4 4.6l-1.8 1.8M6.4 17.6l-1.8 1.8"/>'
+    :'<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>';
+  toast(theme==='light'?'已切换到白天模式':'已切换到夜晚模式');
+}
+
+/* ============ 数据（模拟，正式版接 API） ============ */
+const GRAD=[['#ff7ba0','#ff5c8a'],['#8f6fff','#6f8bff'],['#5aa4ff','#3dd6c3'],['#ffb35c','#ff7a5c'],['#3dd6c3','#5aa4ff'],['#f97ba8','#c86fff'],['#6fd3a8','#3da9fc'],['#ff9a6c','#f95c8a']];
+let seed=0;const g=i=>GRAD[(i??seed++)%GRAD.length];
+function coverHTML(name,i){const c=g(i);return '<div class="cover" style="width:100%;aspect-ratio:1;background:linear-gradient(135deg,'+c[0]+','+c[1]+')"><div class="first">'+name[0]+'</div><svg class="note" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18.5a2.5 2.5 0 1 1-2.5-2.5c.5 0 1 .2 1.5.4V5l11-2v11.5a2.5 2.5 0 1 1-2.5-2.5c.5 0 1 .2 1.5.4"/></svg><div class="ring"></div></div>';}
+
+const SONGS=[['晴天','周杰伦','叶惠美'],['起风了','买辣椒也用券','起风了'],['孤勇者','陈奕迅','孤勇者'],['稻香','周杰伦','魔杰座'],['晚安','颜人中','晚安'],['消愁','毛不易','平凡的一天'],['如愿','王菲','如愿'],['漠河舞厅','柳爽','漠河舞厅']];
+const PLAYLISTS=[['华语经典必听','精选华语黄金年代金曲',1248],['车载电音狂欢','开车必备嗨曲合集',866],['深夜情歌电台','一个人的夜晚慢慢听',2103],['国语流行新歌速递','每周五更新',540],['经典粤语怀旧','致敬港乐黄金时代',921],['轻音乐·减压专享','放松身心纯音乐',775],['摇滚现场精选','躁起来就完事了',488],['怀旧金曲8090','那些年我们一起听歌',1330],['旅行路上BGM','一路风景一路歌',612],['咖啡馆慢时光','慵懒午后轻爵士',356],['健身节奏炸弹','跑步撸铁必备',430],['国风古韵','戏腔国风精选',528]];
+
+/* ============ 侧边栏歌单 ============ */
+document.getElementById('sidePls').innerHTML=PLAYLISTS.slice(0,6).map((p,i)=>'<div class="pl-item" onclick="openPlaylist('+i+')"><div class="pl-cover" style="background:linear-gradient(135deg,'+g(i)[0]+','+g(i)[1]+')">'+p[0][0]+'</div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p[0]+'</span></div>').join('');
+
+/* ============ 首页 ============ */
+(function(){
+  const h=new Date().getHours();
+  document.getElementById('greet').textContent=h<6?'夜深了 🌙':h<12?'上午好 ☀️':h<18?'下午好 🌞':'晚上好 🌆';
+  const d=new Date();document.querySelector('#dateBadge b').textContent=d.getDate();document.querySelector('#dateBadge span').textContent=(d.getMonth()+1)+'月';
+})();
+document.getElementById('homePlGrid').innerHTML=PLAYLISTS.slice(0,5).map((p,i)=>'<div class="song-card" onclick="openPlaylist('+i+')">'+coverHTML(p[0],i)+'<div class="t">'+p[0]+'</div><div class="a">▶ '+(p[2]/10).toFixed(0)+'万 播放</div></div>').join('');
+document.getElementById('homeNewGrid').innerHTML=SONGS.map((s,i)=>'<div class="song-card" onclick="playSong('+i+')">'+coverHTML(s[0],i)+'<div class="t">'+s[0]+'</div><div class="a">'+s[1]+'</div></div>').join('');
+
+/* ============ 搜索 ============ */
+const HOT=[['夏天的风',98],['乌梅子酱',95],['爱如火',88],['向云端',85],['我记得',80],['迟到千年',76],['巴合提的春天',72],['人和人的相遇',65]];
+document.getElementById('hotWrap').innerHTML=HOT.map((h,i)=>'<div class="hot-chip" onclick="doSearch(\''+h[0]+'\')"><b>'+(i+1)+'</b>'+h[0]+'</div>').join('');
+function doSearch(kw){
+  kw=kw||document.getElementById('searchInput').value||'热歌';
+  document.getElementById('searchInput').value=kw;
+  document.getElementById('searchTitle').textContent='“'+kw+'” 的搜索结果（/search/search）';
+  document.getElementById('searchResults').innerHTML=SONGS.map((s,i)=>
+    '<div class="result-row" onclick="playSong('+i+')">'+
+    '<div class="idx">'+String(i+1).padStart(2,'0')+'</div>'+
+    '<div class="rc" style="background:linear-gradient(135deg,'+g(i)[0]+','+g(i)[1]+')">'+s[0][0]+'</div>'+
+    '<div class="ri"><div class="t">'+s[0]+'</div><div class="a">'+s[1]+' · '+s[2]+'<span class="sq">SQ</span></div></div>'+
+    '<div class="du">04:'+((20+i*3)%60<10?'0':'')+((20+i*3)%60)+'</div></div>').join('');
+}
+doSearch('');
+
+/* ============ 排行榜 ============ */
+const RANKS=[['酷狗TOP500','最热歌曲实时更新'],['飙升榜','上升最快的新热歌'],['新歌榜','最新发行好歌'],['原创榜','原创音乐人作品'],['热歌飙升','抖音热歌风向标'],['网络红歌榜','全网爆款红歌'],['DJ热舞榜','节奏炸裂舞曲'],['华语榜','华语歌曲权威排名'],['欧美榜','Billboard风格精选'],['韩国Melon榜','韩流音乐风向'],['日本Oricon榜','日本公信榜精选']];
+document.getElementById('rankCats').innerHTML=RANKS.map((r,i)=>'<div class="cat-item '+(i===0?'on':'')+'" onclick="openRank('+i+',this)"><span>'+r[0]+'</span><span>›</span></div>').join('');
+function openRank(i,el){
+  document.querySelectorAll('#rankCats .cat-item').forEach(x=>x.classList.remove('on'));if(el)el.classList.add('on');
+  const r=RANKS[i];const c=g(i);
+  document.getElementById('rankName').textContent=r[0];document.getElementById('rankDesc').textContent=r[1]+'（/rank/list + /rank/songs）';
+  const rc=document.getElementById('rankCover');rc.textContent=r[0][0];rc.style.background='linear-gradient(135deg,'+c[0]+','+c[1]+')';
+  document.getElementById('rankList').innerHTML=SONGS.map((s,j)=>
+    '<div class="track-row '+(j===0?'playing':'')+'" onclick="playSong('+j+')">'+
+    '<div class="idx" style="color:'+(j<3?'var(--pink)':'var(--text-2)')+';font-weight:800">'+(j+1)+'</div>'+
+    '<div class="rc" style="width:60px;height:60px;border-radius:12px;background:linear-gradient(135deg,'+g(j)[0]+','+g(j)[1]+');display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900">'+s[0][0]+'</div>'+
+    '<div class="tt">'+s[0]+'<span class="sq">SQ</span></div><div class="aa">'+s[1]+'</div><div class="dd">04:'+((10+j*4)%60)+'</div></div>').join('');
+}
+openRank(0);
+
+/* ============ 歌单广场 ============ */
+const PLCATS=['全部','流行','摇滚','民谣','电子','说唱','古风','轻音乐','粤语','欧美','日语','韩语','影视原声'];
+document.getElementById('plCats').innerHTML=PLCATS.map((c,i)=>'<div class="cat-item '+(i===0?'on':'')+'" onclick="switchPlCat(this)">'+c+'</div>').join('');
+function switchPlCat(el){document.querySelectorAll('#plCats .cat-item').forEach(x=>x.classList.remove('on'));el.classList.add('on');toast('分类：'+el.textContent+'（/playlist/cat）');}
+document.getElementById('plGrid').innerHTML=PLAYLISTS.map((p,i)=>'<div class="song-card" onclick="openPlaylist('+i+')">'+coverHTML(p[0],i)+'<div class="t">'+p[0]+'</div><div class="a">▶ '+(p[2]/10).toFixed(0)+'万 播放</div></div>').join('');
+function openPlaylist(i){
+  const p=PLAYLISTS[i];const c=g(i);
+  document.getElementById('plGrid').style.display='none';document.getElementById('plDetail').style.display='block';
+  document.getElementById('plName').textContent=p[0];document.getElementById('plDesc').textContent=p[1]+' · '+p[2]+'人收藏（/playlist/tracks）';
+  const cv=document.getElementById('plCover');cv.textContent=p[0][0];cv.style.background='linear-gradient(135deg,'+c[0]+','+c[1]+')';
+  document.getElementById('plTracks').innerHTML=SONGS.map((s,j)=>trackRow(s,j)).join('');
+}
+function trackRow(s,j){return '<div class="track-row '+(j===0?'playing':'')+'" onclick="playSong('+j+')"><div class="idx">'+String(j+1).padStart(2,'0')+'</div><div class="rc" style="width:60px;height:60px;border-radius:12px;background:linear-gradient(135deg,'+g(j)[0]+','+g(j)[1]+');display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900">'+s[0][0]+'</div><div class="tt">'+s[0]+'</div><div class="aa">'+s[1]+'</div><div class="dd">04:'+((12+j*3)%60)+'</div></div>';}
+
+/* ============ FM ============ */
+document.getElementById('spectrum').innerHTML=Array.from({length:22},(_,i)=>'<i style="animation-delay:'+(i*0.13).toFixed(2)+'s;animation-duration:'+(0.7+Math.random()*0.6).toFixed(2)+'s"></i>').join('');
+const RADIOS=[['热歌电台','🔥'],['新歌电台','✨'],['情景电台','🎧'],['经典电台','📀']];
+document.getElementById('radioRow').innerHTML=RADIOS.map((r,i)=>'<div class="radio-card" onclick="toast(\'电台：'+r[0]+'（/fm /scene）\')"><div class="rc" style="background:linear-gradient(135deg,'+g(i)[0]+','+g(i)[1]+')">'+r[1]+'</div><div class="t">'+r[0]+'</div><div class="s">正在播放 · '+SONGS[i][0]+'</div></div>').join('');
+const SCENES=[['清晨唤醒','🚗 驾车通勤'],['雨天氛围','🌧 安静陪伴'],['运动节拍','🏃 供应能量'],['睡前助眠','😴 轻柔入梦'],['咖啡馆','☕ 慢时光'],['派对模式','🎉 燃爆全场']];
+document.getElementById('sceneGrid').innerHTML=SCENES.map((s,i)=>'<div class="song-card" onclick="toast(\'场景：'+s[0]+'\')">'+coverHTML(s[0],i)+'<div class="t">'+s[0]+'</div><div class="a">'+s[1]+'</div></div>').join('');
+
+/* ============ 我的 ============ */
+document.getElementById('favList').innerHTML=SONGS.slice(0,5).map((s,i)=>trackRow(s,i)).join('');
+document.getElementById('stFav').textContent=SONGS.length;document.getElementById('stPl').textContent=PLAYLISTS.length;
+document.getElementById('stRe').textContent=36;document.getElementById('stAl').textContent=8;
+function doLogin(){closeLogin();document.querySelector('.user-card .nm').textContent='车机用户_9527';document.querySelector('.user-card .sub').textContent='ID: 10086 · 已登录';document.getElementById('mineName').textContent='车机用户_9527';toast('登录成功（模拟）');}
+
+/* ============ 歌手 / 专辑 ============ */
+const AR_SONGS=SONGS.map(s=>s.slice());
+const AR_ALBUMS=[['叶惠美',2003],['七里香',2004],['十一月的萧邦',2005],['魔杰座',2008],['跨时代',2010],['周杰伦的床边故事',2016],['最伟大的作品',2022],['范特西',2001],['八度空间',2002],['依然范特西',2006]];
+document.getElementById('arSongs').innerHTML=AR_SONGS.map((s,i)=>trackRow(s,i)).join('');
+document.getElementById('arAlbumGrid').innerHTML=AR_ALBUMS.map((a,i)=>'<div class="song-card" onclick="openAlbum('+i+')">'+coverHTML(a[0],i)+'<div class="t">'+a[0]+'</div><div class="a">'+a[1]+'年 · '+(8+i%4)+'首</div></div>').join('');
+function openAlbum(i){
+  go('album');const a=AR_ALBUMS[i];const c=g(i);
+  document.getElementById('alName').textContent=a[0];
+  document.getElementById('alMeta').textContent='周杰伦 · '+a[1]+'年发行 · 共 '+(8+i%4)+' 首（/album/detail）';
+  const cv=document.getElementById('alCover');cv.textContent=a[0][0];cv.style.background='linear-gradient(135deg,'+c[0]+','+c[1]+')';
+  document.getElementById('alTracks').innerHTML=SONGS.slice(0,6).map((s,j)=>trackRow(s,j)).join('');
+}
+
+/* ============ 页面切换 ============ */
+function go(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('page-'+p).classList.add('on');
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.toggle('on',x.dataset.page===p));
+  if(p!=='plist'&&document.getElementById('plDetail').style.display==='block'){document.getElementById('plDetail').style.display='none';document.getElementById('plGrid').style.display='grid';}
+  document.getElementById('pages').scrollTop=0;
+}
+function switchTab(el,showId){
+  el.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
+  document.getElementById('arSongs').style.display=showId==='arSongs'?'block':'none';
+  document.getElementById('arAlbums').style.display=showId==='arAlbums'?'block':'none';
+}
+
+/* ============ 播放（模拟链路 /song/url → /lyric） ============ */
+function playSong(i){
+  const s=SONGS[i];const c=g(i);
+  document.getElementById('miniTitle').textContent=s[0];
+  document.getElementById('miniArtist').textContent=s[1]+' · '+s[2];
+  const mc=document.getElementById('miniCover');mc.textContent=s[0][0];mc.style.background='linear-gradient(135deg,'+c[0]+','+c[1]+')';
+  const bg=document.getElementById('fp-bg');bg.style.background='linear-gradient(135deg,'+c[0]+','+c[1]+')';
+  const fc=document.getElementById('fpCover');fc.textContent=s[0][0];fc.style.background='linear-gradient(135deg,'+c[0]+','+c[1]+')';
+  document.getElementById('fpTitle').textContent=s[0];
+  document.getElementById('fpArtist').textContent=s[1]+' · 专辑《'+s[2]+'》 · 2024';
+  buildLrc(s[0]);
+  toast('▶ '+s[0]+'（/song/url → /lyric）');
+  openFull();
+}
+const LRC_LINES=['♪ %TITLE%','前奏渐入 · 回忆的画面','故事的小黄花','从出生那年就飘着','童年的荡秋千','随记忆一直晃到现在','（间奏）','刮风这天 我试过握着你手','但偏偏 雨渐渐 大到我看你不见','还要多久 我才能在你身边','等到放晴的那天 也许我会比较好一点','从前从前 有个人爱你很久','但偏偏 风渐渐 把距离吹得好远'];
+function buildLrc(title){
+  document.getElementById('lrcBox').innerHTML=LRC_LINES.map((l,i)=>'<div class="lrc-line '+(i===7?'cur':'')+'">'+l.replace('%TITLE%',title)+'</div>').join('');
+}
+buildLrc('晴天');
+
+/* ============ 全屏 / 进度 / toast / 登录 ============ */
+function openFull(){document.getElementById('fullplayer').classList.add('on')}
+function closeFull(){document.getElementById('fullplayer').classList.remove('on')}
+function seek(e){const b=e.currentTarget;const r=b.getBoundingClientRect();const p=Math.min(100,Math.max(0,(e.clientX-r.left)/r.width*100));b.querySelector('.fill').style.width=p+'%';b.querySelector('.dot').style.left=p+'%'}
+let toastTimer;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('on'),2200)}
+function openLogin(){document.getElementById('mask').classList.add('on')}
+function closeLogin(){document.getElementById('mask').classList.remove('on')}
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+name: kugou_car
+description: "酷狗概念版 · 车机版 —— EchoMusic 风格，15.6 寸 1080p 横屏音乐播放器。"
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  # 状态管理
+  provider: ^6.1.2
+  # HTTP 客户端（后续接真实酷狗 API 服务）
+  dio: ^5.7.0
+  # 封面图加载
+  cached_network_image: ^3.4.1
+  # 封面取色（做封面色模糊歌词背景）
+  palette_generator: ^0.3.3+7
+  # 主题/登录态持久化
+  shared_preferences: ^2.3.2
+  # 内嵌 API 服务器（libkugou_server.so）dart:ffi 调用
+  ffi: ^2.1.3
+  # 拿 Android filesDir 作为服务器 data_dir
+  path_provider: ^2.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
