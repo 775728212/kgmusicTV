@@ -20,12 +20,14 @@ Future<void> main() async {
 /// 真机装上 jniLibs 后自动切 http，页面层零改动。
 Future<KugouApi> createApi() async {
   try {
-    await KugouApiServer.start();
+    // 加超时兜底：即便内嵌服务器启动卡住（如 path_provider 的 JNI 调用
+    // 在真机 release 下挂起），也保证 runApp 一定能执行，不会白屏。
+    await KugouApiServer.start().timeout(const Duration(seconds: 6));
     if (KugouApiServer.currentPort > 0) {
       return HttpKugouApi();
     }
   } catch (_) {
-    // 忽略启动失败，回退 mock
+    // 超时/启动失败，回退 mock
   }
   return MockKugouApi();
 }

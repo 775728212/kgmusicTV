@@ -65,7 +65,14 @@ class KugouApiServer {
       }
 
       // 用 path_provider 拿 filesDir 作为 data_dir（持久化 device_info.json）。
-      final appDir = await getApplicationSupportDirectory();
+      // 真机 release 下 path_provider 底层走 JNI，可能挂起；加超时 + 临时目录兜底。
+      Directory appDir;
+      try {
+        appDir = await getApplicationSupportDirectory()
+            .timeout(const Duration(seconds: 3));
+      } catch (_) {
+        appDir = Directory.systemTemp;
+      }
       final dataDir = appDir.path.toNativeUtf8();
       late int port;
       try {
